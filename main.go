@@ -82,7 +82,7 @@ func soundHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	flag.Parse()
-	lr = lrserver.New("Terminator", lrserver.DefaultPort)
+	lr = lrserver.New("chirper", lrserver.DefaultPort)
 	lr.SetErrorLog(nil)
 	lr.SetStatusLog(nil)
 	go lr.ListenAndServe()
