@@ -16,7 +16,7 @@ var now int64
 
 func checkForTimeMatch() {
 	for _, a := range alarms {
-		if a.time == now {
+		if a.TimeStamp == now {
 			a.Playing = true
 			lr.Reload("")
 		}

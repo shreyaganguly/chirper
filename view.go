@@ -23,30 +23,39 @@ const clock = `<html>
 			<script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
     </head>
     <body>
+    <div class="container">
+        <div class="row">
+            <div class='col-sm-6'>
+      <div class="form-group">
+<form action="/set" method="post">
 
-<form>
-<div class="container">
-    <div class="row">
-        <div class='col-sm-6'>
-  <div class="form-group">
     <label for="dateandtime">Set Date And Time For Alarm</label>
-    <div class='input-group date' id='datetimepicker1'>
-        <input type='text' class="form-control" />
+    <div class='input-group date' id='datetimepicker'>
+        <input type='text' class="form-control" name="datetime" value=""/>
         <span class="input-group-addon">
             <span class="glyphicon glyphicon-calendar"></span>
         </span>
     </div>
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-  </div>
-  </div>
-  </div>
+  <button type="submit" class="btn btn-primary" style="margin:10;">Submit</button>
+
 </form>
+<ul class="list-group">
+{{ range .Alarms}}
+  <li class="list-group-item">{{ .DateTime }}
+  <span class="pull-right"><i class="fa fa-times" aria-hidden="true"></i></span>
+  <span class="pull-right" style="margin-right:10px;"><i class="fa fa-clock-o" aria-hidden="true"></i></span>
+  </li>
+{{ end }}
+</ul>
+</div>
+</div>
+</div>
 </body>
         <script>
         var a = new Date();
               $(function () {
-                  $('#datetimepicker1').datetimepicker({minDate: a,defaultDate: a, format: "DD/MM/YYYY hh:mm A"});
+                  $('#datetimepicker').datetimepicker({minDate: a,defaultDate: a, format: "DD/MM/YYYY hh:mm A"});
               });
           </script>
         </script>

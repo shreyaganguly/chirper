@@ -15,9 +15,10 @@ import (
 )
 
 type alarm struct {
-	time    int64
-	Playing bool
-	snooze  int64
+	DateTime  string
+	TimeStamp int64
+	Playing   bool
+	snooze    int64
 }
 
 var (
@@ -39,7 +40,7 @@ func alarmHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("Came herererererere")
 	for _, v := range alarms {
-		fmt.Println(v.Playing, v.time)
+		fmt.Println(v)
 	}
 	data := struct {
 		SoundFile string
@@ -56,18 +57,26 @@ func alarmHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func setAlarmHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Alarm SuccessfullySet"))
 	r.ParseForm()
-	d := strings.Split(r.FormValue("date"), "/")
-	t := strings.Split(r.FormValue("time"), ":")
+	dateTime := strings.Split(r.FormValue("datetime"), " ")
+	dateParts := strings.Split(dateTime[0], "/")
+	timeParts := strings.Split(dateTime[1], ":")
+	hours := convertor(timeParts[0])
+	if dateTime[2] == "PM" && hours != 12 {
+		hours += 12
+	}
+	if dateTime[2] == "AM" && hours == 12 {
+		hours = 0
+	}
 	loc, err := time.LoadLocation("Asia/Kolkata")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	timeStamp := time.Date(convertor(d[2]), time.Month(convertor(d[1])), convertor(d[0]), convertor(t[0]), convertor(t[1]), 0, 0, loc)
+	timeStamp := time.Date(convertor(dateParts[2]), time.Month(convertor(dateParts[1])), convertor(dateParts[0]), hours, convertor(timeParts[1]), 0, 0, loc)
 	fmt.Println(timeStamp)
-	alarms = append(alarms, &alarm{timeStamp.Unix(), false, 0})
+	alarms = append(alarms, &alarm{r.FormValue("datetime"), timeStamp.Unix(), false, 0})
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func soundHandler(w http.ResponseWriter, r *http.Request) {
