@@ -1,0 +1,10 @@
+<div>
+<ul class="list-group">
+  {{ range .}}
+  <li class="list-group-item">{{ .DateTime }}
+    <span class="pull-right check" value={{ .TimeStamp }} onClick="myFunction(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+    <span class="pull-right" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+    </li>
+  {{ end }}
+</ul>
+</div>

@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/jaschaephraim/lrserver"
+	"github.com/unrolled/render"
 )
 
 type alarm struct {
@@ -33,12 +34,12 @@ var (
 )
 
 func alarmHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.New("alarm").Parse(clock)
+	tmpl, err := template.New("setalarm").Parse(clock)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("Came herererererere")
+	fmt.Println("Came here in index handler")
 	for _, v := range alarms {
 		fmt.Println(v)
 	}
@@ -74,9 +75,24 @@ func setAlarmHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	timeStamp := time.Date(convertor(dateParts[2]), time.Month(convertor(dateParts[1])), convertor(dateParts[0]), hours, convertor(timeParts[1]), 0, 0, loc)
-	fmt.Println(timeStamp)
+	// fmt.Println(timeStamp)
 	alarms = append(alarms, &alarm{r.FormValue("datetime"), timeStamp.Unix(), false, 0})
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	rndr := render.New()
+	rndr.HTML(w, http.StatusOK, "alarms", alarms)
+	// err = tmpl.Execute(w, alarms)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+	// http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func deleteAlarmHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	fmt.Println(r.Form)
+	removeAlarm(int64(convertor(r.FormValue("timestamp"))))
+	rndr := render.New()
+	rndr.HTML(w, http.StatusOK, "alarms", alarms)
 }
 
 func soundHandler(w http.ResponseWriter, r *http.Request) {
@@ -98,6 +114,7 @@ func main() {
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 	http.HandleFunc("/", alarmHandler)
 	http.HandleFunc("/set", setAlarmHandler)
+	http.HandleFunc("/delete", deleteAlarmHandler)
 	http.HandleFunc(fmt.Sprintf("/%s", *soundFile), soundHandler)
 	log.Println("Starting Server at", addr)
 	go checkForAlarm()

@@ -29,7 +29,18 @@ func checkForAlarm() {
 	defer ticker.Stop()
 	for range ticker.C {
 		now = time.Now().Unix()
-		fmt.Println("Came here", now, time.Now())
 		go checkForTimeMatch()
 	}
+}
+
+func removeAlarm(t int64) {
+	for i, v := range alarms {
+		fmt.Printf("%#v", v)
+		fmt.Println(t)
+		if v.TimeStamp == t {
+			alarms = append(alarms[:i], alarms[i+1:]...)
+			return
+		}
+	}
+
 }
