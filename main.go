@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -34,6 +35,8 @@ var (
 )
 
 func alarmHandler(w http.ResponseWriter, r *http.Request) {
+	var playing bool
+	var timestamp string
 	tmpl, err := template.New("setalarm").Parse(clock)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -41,14 +44,23 @@ func alarmHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("Came here in index handler")
 	for _, v := range alarms {
+		if v.Playing {
+			playing = true
+			timestamp = strconv.Itoa(int(v.TimeStamp))
+			break
+		}
 		fmt.Println(v)
 	}
 	data := struct {
 		SoundFile string
 		Alarms    []*alarm
+		Playing   bool
+		TimeStamp string
 	}{
 		*soundFile,
 		alarms,
+		playing,
+		timestamp,
 	}
 	err = tmpl.Execute(w, data)
 	if err != nil {
@@ -75,16 +87,9 @@ func setAlarmHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	timeStamp := time.Date(convertor(dateParts[2]), time.Month(convertor(dateParts[1])), convertor(dateParts[0]), hours, convertor(timeParts[1]), 0, 0, loc)
-	// fmt.Println(timeStamp)
 	alarms = append(alarms, &alarm{r.FormValue("datetime"), timeStamp.Unix(), false, 0})
 	rndr := render.New()
 	rndr.HTML(w, http.StatusOK, "alarms", alarms)
-	// err = tmpl.Execute(w, alarms)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	// http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func deleteAlarmHandler(w http.ResponseWriter, r *http.Request) {

@@ -19,6 +19,7 @@ const clock = `
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+  <script src="http://localhost:35729/livereload.js"></script>      
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
@@ -57,11 +58,16 @@ const clock = `
   </div>
 </body>
 <script>
-  var a = new Date();
+  var audio = new Audio({{ .SoundFile }});
+  {{ if .Playing }}
+    console.log("Herererere");
+    audio.play();
+  {{ end }}
+  var currentDate = new Date();
   $(function() {
     $('#datetimepicker').datetimepicker({
-      minDate: a,
-      defaultDate: a,
+      minDate: currentDate,
+      defaultDate: currentDate,
       format: "DD/MM/YYYY hh:mm A"
     });
   });
@@ -77,11 +83,6 @@ const clock = `
       });
   });
     function myFunction(e){
-      console.log("Came here");
-      // alert(e);
-      console.log(e);
-      // alert($(this).value);
-      // alert($(this).attr('value'));
       $.ajax({
               type: "post",
               url: "/delete",
