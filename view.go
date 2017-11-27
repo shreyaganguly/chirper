@@ -19,7 +19,7 @@ const clock = `
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-  <script src="http://localhost:35729/livereload.js"></script>      
+  <script src="http://localhost:35729/livereload.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
@@ -47,8 +47,8 @@ const clock = `
         <ul class="list-group">
           {{ range .Alarms}}
           <li class="list-group-item">{{ .DateTime }}
-            <span class="pull-right check" value={{ .TimeStamp }} onClick="myFunction(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-            <span class="pull-right" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+            <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+            <span class="pull-right" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
           </li>
           {{ end }}
         </ul>
@@ -60,7 +60,7 @@ const clock = `
 <script>
   var audio = new Audio({{ .SoundFile }});
   {{ if .Playing }}
-    console.log("Herererere");
+    audio = new Audio({{ .SoundFile }});
     audio.play();
   {{ end }}
   var currentDate = new Date();
@@ -82,7 +82,7 @@ const clock = `
               },
       });
   });
-    function myFunction(e){
+    function deleteAlarm(e){
       $.ajax({
               type: "post",
               url: "/delete",
@@ -90,6 +90,9 @@ const clock = `
               data: {timestamp: e.getAttribute('value')},
               success: function(result){
                 $("#alarmview").html(result);
+                if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
+                  audio.pause();
+                }
               },
       });
     };
