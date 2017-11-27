@@ -4,6 +4,11 @@ const clock = `
 <html>
 
 <head>
+<style>
+.backgroundOrange{
+        background-color: orange !important;
+    }
+</style>
   <title></title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -43,13 +48,21 @@ const clock = `
         </div>
         <button type="submit" id="submitbtn" class="btn btn-primary" style="margin:10;">Submit</button>
         </form>
+        {{ $alarmedTimeStamp := .TimeStamp }}
         <div id="alarmview">
         <ul class="list-group">
           {{ range .Alarms}}
-          <li class="list-group-item">{{ .DateTime }}
-            <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-            <span class="pull-right" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
-          </li>
+            {{ if eq $alarmedTimeStamp .TimeStamp }}
+              <li class="list-group-item" id="alarmed">{{ .DateTime }}
+                <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+              </li>
+            {{ else }}
+              <li class="list-group-item">{{ .DateTime }}
+                <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+              </li>
+            {{ end }}
           {{ end }}
         </ul>
         </div>
@@ -96,9 +109,25 @@ const clock = `
               },
       });
     };
-
-
-
+    function snoozeAlarm(e){
+      $.ajax({
+              type: "post",
+              url: "/snooze",
+              dataType: 'html',
+              data: {timestamp: e.getAttribute('value'), time: moment.utc(e.getAttribute('time'),'DD/MM/YYYY hh:mm A').add(5,'minutes').format('DD/MM/YYYY hh:mm A')},
+              success: function(result){
+                $("#alarmview").html(result);
+                if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
+                  audio.pause();
+                }
+              },
+      });
+    };
+    {{ if .Playing }}
+      setInterval(function(){
+        $("#alarmed").toggleClass("backgroundOrange");
+        },1000)
+    {{ end }}
 </script>
 </body>
 

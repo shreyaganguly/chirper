@@ -42,5 +42,16 @@ func removeAlarm(t int64) {
 			return
 		}
 	}
+}
 
+func snoozeAlarm(time string, timestamp int64) {
+	for _, v := range alarms {
+		fmt.Printf("%#v", v)
+		if v.TimeStamp == timestamp && v.Playing {
+			v.TimeStamp += 5 * 60
+			v.DateTime = time
+			v.Playing = false
+			return
+		}
+	}
 }

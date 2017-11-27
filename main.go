@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -36,7 +35,7 @@ var (
 
 func alarmHandler(w http.ResponseWriter, r *http.Request) {
 	var playing bool
-	var timestamp string
+	var timestamp int64
 	tmpl, err := template.New("setalarm").Parse(clock)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -46,7 +45,7 @@ func alarmHandler(w http.ResponseWriter, r *http.Request) {
 	for _, v := range alarms {
 		if v.Playing {
 			playing = true
-			timestamp = strconv.Itoa(int(v.TimeStamp))
+			timestamp = v.TimeStamp
 			break
 		}
 		fmt.Println(v)
@@ -55,7 +54,7 @@ func alarmHandler(w http.ResponseWriter, r *http.Request) {
 		SoundFile string
 		Alarms    []*alarm
 		Playing   bool
-		TimeStamp string
+		TimeStamp int64
 	}{
 		*soundFile,
 		alarms,
@@ -100,6 +99,31 @@ func deleteAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	rndr.HTML(w, http.StatusOK, "alarms", alarms)
 }
 
+func snoozeAlarmHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	fmt.Println(r.Form)
+	dateTime := strings.Split(r.FormValue("time"), " ")
+	dateParts := strings.Split(dateTime[0], "/")
+	timeParts := strings.Split(dateTime[1], ":")
+	hours := convertor(timeParts[0])
+	if dateTime[2] == "PM" && hours != 12 {
+		hours += 12
+	}
+	if dateTime[2] == "AM" && hours == 12 {
+		hours = 0
+	}
+	loc, err := time.LoadLocation("Asia/Kolkata")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	timeStamp := time.Date(convertor(dateParts[2]), time.Month(convertor(dateParts[1])), convertor(dateParts[0]), hours, convertor(timeParts[1]), 0, 0, loc)
+	timeStamp.Add(5 * time.Minute)
+	snoozeAlarm(r.FormValue("time"), int64(convertor(r.FormValue("timestamp"))))
+	rndr := render.New()
+	rndr.HTML(w, http.StatusOK, "alarms", alarms)
+}
+
 func soundHandler(w http.ResponseWriter, r *http.Request) {
 	file, err := os.Open(*soundFile)
 	if err != nil {
@@ -119,6 +143,7 @@ func main() {
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 	http.HandleFunc("/", alarmHandler)
 	http.HandleFunc("/set", setAlarmHandler)
+	http.HandleFunc("/snooze", snoozeAlarmHandler)
 	http.HandleFunc("/delete", deleteAlarmHandler)
 	http.HandleFunc(fmt.Sprintf("/%s", *soundFile), soundHandler)
 	log.Println("Starting Server at", addr)
