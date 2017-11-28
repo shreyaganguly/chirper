@@ -1,0 +1,78 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="flipclock.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <script src="http://localhost:35729/livereload.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+		<script src="flipclock.min.js"></script>
+	</head>
+	<body>
+
+<div class="container">
+  <h2>Start Timer</h2>
+  <form>
+    <div class="form-group row">
+      <div class="col-xs-2">
+        <label>Hours</label>
+        <input class="form-control" id="hours" type="text">
+      </div>
+      <div class="col-xs-2">
+        <label>Minutes</label>
+        <input class="form-control" id="minutes" type="text">
+      </div>
+      <div class="col-xs-2">
+        <label>Seconds</label>
+        <input class="form-control" id="seconds" type="text">
+      </div>
+    </div>
+    <button type="submit" id="submitbtntimer" class="btn btn-primary" style="margin:10;">Submit</button>
+  </form>
+</div>
+	<div class="clock hidden" style="margin:9em; padding-left:50px;"></div>
+	<div class="message"></div>
+
+	<script type="text/javascript">
+	var clock;
+
+$(document).ready(function() {
+  // clock = new FlipClock($(".clock"), 20, {
+  //   clockFace: "Counter",
+  //   autoStart: true,
+  //   countdown: true
+  // });
+  var clock;
+  $("#submitbtntimer").on("click", function() {
+    alert(
+      parseInt($("#hours").val()) * 60 * 60 +
+        parseInt($("#minutes").val()) * 60 +
+        parseInt($("#seconds").val())
+    );
+    $(".clock").removeClass("hidden");
+    clock = $(".clock").FlipClock({
+      clockFace: "HourlyCounter",
+      autoStart: false,
+      callbacks: {
+        stop: function() {
+          $(".message").html("The clock has stopped!");
+        }
+      }
+    });
+    clock.setTime(
+      parseInt($("#hours").val()) * 60 * 60 +
+        parseInt($("#minutes").val()) * 60 +
+        parseInt($("#seconds").val()) -
+        1
+    );
+    clock.setCountdown(true);
+    clock.start();
+    return false;
+  });
+});
+</script>
+
+	</body>
+</html>

@@ -134,6 +134,31 @@ func soundHandler(w http.ResponseWriter, r *http.Request) {
 	io.Copy(w, file)
 }
 
+func timerHandler(w http.ResponseWriter, r *http.Request) {
+	rndr := render.New()
+	rndr.HTML(w, http.StatusOK, "timer", nil)
+}
+
+func jsHandler(w http.ResponseWriter, r *http.Request) {
+	file, err := os.Open("flipclock.min.js")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+	io.Copy(w, file)
+}
+
+func cssHandler(w http.ResponseWriter, r *http.Request) {
+	file, err := os.Open("flipclock.css")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+	io.Copy(w, file)
+}
+
 func main() {
 	flag.Parse()
 	lr = lrserver.New("chirper", lrserver.DefaultPort)
@@ -145,7 +170,10 @@ func main() {
 	http.HandleFunc("/set", setAlarmHandler)
 	http.HandleFunc("/snooze", snoozeAlarmHandler)
 	http.HandleFunc("/delete", deleteAlarmHandler)
+	http.HandleFunc("/timer", timerHandler)
 	http.HandleFunc(fmt.Sprintf("/%s", *soundFile), soundHandler)
+	http.HandleFunc("/flipclock.min.js", jsHandler)
+	http.HandleFunc("/flipclock.css", cssHandler)
 	log.Println("Starting Server at", addr)
 	go checkForAlarm()
 	lr.Reload("")
