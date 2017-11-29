@@ -13,6 +13,7 @@ const clock = `
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="flipclock.css">
   <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link href="https://eonasdan.github.io/bootstrap-datetimepicker/css/prettify-1.0.css" rel="stylesheet">
@@ -27,6 +28,8 @@ const clock = `
   <script src="http://localhost:35729/livereload.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="flipclock.min.js"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
   <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
 </head>
@@ -34,7 +37,8 @@ const clock = `
 <body>
   <div class="container">
     <div class="row">
-      <div class='col-sm-6'>
+      <div class='col-sm-5'>
+        <h3>Set Alarm</h3>
         <div class="form-group">
           <form id="datetimepickerform" method="post">
 
@@ -67,11 +71,42 @@ const clock = `
         </ul>
         </div>
       </div>
+      <div class='col-sm-7'>
+        <h3>Start Timer</h3>
+        <div class="form-group">
+          <form>
+            <div class="form-group row">
+              <div class="col-xs-2">
+                <label>Hours</label>
+                <input class="form-control" id="hours" type="text">
+              </div>
+              <div class="col-xs-2">
+                <label>Minutes</label>
+                <input class="form-control" id="minutes" type="text">
+              </div>
+              <div class="col-xs-2">
+                <label>Seconds</label>
+                <input class="form-control" id="seconds" type="text">
+              </div>
+            </div>
+            <button type="submit" id="submitbtntimer" class="btn btn-primary" style="margin:10;">Submit</button>
+          </form>
+        </div>
+        <div class="row timer hidden">
+          <div class="col-sm-10">
+        	<div class="clock"></div>
+        </div>
+        <div class="col-sm-2">
+          <button type="button" class="btn btn-warning" style="margin-top:40px;" id="btnclose">Close</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </body>
 <script>
   var audio = new Audio({{ .SoundFile }});
+  var clock;
   {{ if .Playing }}
     audio = new Audio({{ .SoundFile }});
     audio.play();
@@ -95,6 +130,37 @@ const clock = `
               },
       });
   });
+  $("#submitbtntimer").on("click", function() {
+    alert("Cam hererere");
+    audio.pause();
+    var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
+    var minute = isNaN(parseInt($("#minutes").val())) ? 0 : parseInt($("#minutes").val()) * 60
+    var second = isNaN(parseInt($("#seconds").val())) ? 0 : parseInt($("#seconds").val())
+    $(".timer").removeClass("hidden");
+    alert("Cam hererere");
+    clock = $(".clock").FlipClock({
+      clockFace: "HourlyCounter",
+      autoStart: false,
+      callbacks: {
+        stop: function() {
+          if ($(".timer").is(":visible") === true) {
+            audio.play();
+          }
+        },
+        reset: function() {
+          $(".timer").addClass("hidden");
+        }
+      }
+    });
+    clock.setTime(hour + minute + second);
+    clock.setCountdown(true);
+    clock.start();
+    return false;
+  });
+$("#btnclose").on("click", function() {
+  audio.pause();
+  clock.reset();
+});
     function deleteAlarm(e){
       $.ajax({
               type: "post",
