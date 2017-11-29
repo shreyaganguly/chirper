@@ -32,45 +32,53 @@
     <button type="submit" id="submitbtntimer" class="btn btn-primary" style="margin:10;">Submit</button>
   </form>
 </div>
-	<div class="clock hidden" style="margin:9em; padding-left:50px;"></div>
-	<div class="message"></div>
+<div class="form-group row timer hidden">
+  <div class="col-xs-8">
+	<div class="clock" style="margin:9em; padding-left:50px;"></div>
+</div>
+<div class="col-xs-4">
+  <button type="button" style="margin:9em;" class="btn btn-warning" id="btnclose">Close</button>
+</div>
+</div>
 
 	<script type="text/javascript">
 	var clock;
-
+var audio = new Audio({{ .SoundFile }});
 $(document).ready(function() {
-  // clock = new FlipClock($(".clock"), 20, {
-  //   clockFace: "Counter",
-  //   autoStart: true,
-  //   countdown: true
-  // });
-  var clock;
+
   $("#submitbtntimer").on("click", function() {
-    alert(
-      parseInt($("#hours").val()) * 60 * 60 +
-        parseInt($("#minutes").val()) * 60 +
-        parseInt($("#seconds").val())
-    );
-    $(".clock").removeClass("hidden");
+		console.log("Cam hererere");
+		audio.pause();
+		var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
+		var minute = isNaN(parseInt($("#minutes").val())) ? 0 : parseInt($("#minutes").val()) * 60
+		var second = isNaN(parseInt($("#seconds").val())) ? 0 : parseInt($("#seconds").val())
+    $(".timer").removeClass("hidden");
     clock = $(".clock").FlipClock({
       clockFace: "HourlyCounter",
       autoStart: false,
       callbacks: {
         stop: function() {
-          $(".message").html("The clock has stopped!");
-        }
+					if ($(".timer").is(":visible") === true) {
+						alert("came here ins top")
+						audio.play();
+					}
+        },
+				reset: function() {
+					$(".timer").addClass("hidden");
+					alert("Came in reset")
+				}
       }
     });
-    clock.setTime(
-      parseInt($("#hours").val()) * 60 * 60 +
-        parseInt($("#minutes").val()) * 60 +
-        parseInt($("#seconds").val()) -
-        1
-    );
+    clock.setTime(hour + minute + second);
     clock.setCountdown(true);
     clock.start();
     return false;
   });
+});
+$("#btnclose").on("click", function() {
+	audio.pause();
+	clock.reset();
+
 });
 </script>
 

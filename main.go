@@ -136,7 +136,12 @@ func soundHandler(w http.ResponseWriter, r *http.Request) {
 
 func timerHandler(w http.ResponseWriter, r *http.Request) {
 	rndr := render.New()
-	rndr.HTML(w, http.StatusOK, "timer", nil)
+	data := struct {
+		SoundFile string
+	}{
+		*soundFile,
+	}
+	rndr.HTML(w, http.StatusOK, "timer", data)
 }
 
 func jsHandler(w http.ResponseWriter, r *http.Request) {
