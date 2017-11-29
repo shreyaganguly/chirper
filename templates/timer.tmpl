@@ -59,13 +59,11 @@ $(document).ready(function() {
       callbacks: {
         stop: function() {
 					if ($(".timer").is(":visible") === true) {
-						alert("came here ins top")
 						audio.play();
 					}
         },
 				reset: function() {
 					$(".timer").addClass("hidden");
-					alert("Came in reset")
 				}
       }
     });

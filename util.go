@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -35,8 +34,6 @@ func checkForAlarm() {
 
 func removeAlarm(t int64) {
 	for i, v := range alarms {
-		fmt.Printf("%#v", v)
-		fmt.Println(t)
 		if v.TimeStamp == t {
 			alarms = append(alarms[:i], alarms[i+1:]...)
 			return
@@ -46,7 +43,6 @@ func removeAlarm(t int64) {
 
 func snoozeAlarm(time string, timestamp int64) {
 	for _, v := range alarms {
-		fmt.Printf("%#v", v)
 		if v.TimeStamp == timestamp && v.Playing {
 			v.TimeStamp += 5 * 60
 			v.DateTime = time

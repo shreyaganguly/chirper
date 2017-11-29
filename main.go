@@ -41,14 +41,12 @@ func alarmHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("Came here in index handler")
 	for _, v := range alarms {
 		if v.Playing {
 			playing = true
 			timestamp = v.TimeStamp
 			break
 		}
-		fmt.Println(v)
 	}
 	data := struct {
 		SoundFile string
@@ -93,7 +91,6 @@ func setAlarmHandler(w http.ResponseWriter, r *http.Request) {
 
 func deleteAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	fmt.Println(r.Form)
 	removeAlarm(int64(convertor(r.FormValue("timestamp"))))
 	rndr := render.New()
 	rndr.HTML(w, http.StatusOK, "alarms", alarms)
@@ -101,7 +98,6 @@ func deleteAlarmHandler(w http.ResponseWriter, r *http.Request) {
 
 func snoozeAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	fmt.Println(r.Form)
 	dateTime := strings.Split(r.FormValue("time"), " ")
 	dateParts := strings.Split(dateTime[0], "/")
 	timeParts := strings.Split(dateTime[1], ":")
