@@ -27,9 +27,9 @@ const clock = `
         <![endif]-->
   <script src="http://localhost:35729/livereload.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="http://1000hz.github.io/bootstrap-validator/dist/validator.min.js"></script>
   <script src="flipclock.min.js"></script>
-  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
   <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
 </head>
@@ -88,25 +88,28 @@ const clock = `
         <div class="row well" style="margin:0px;">
           <div class='col-sm-offset-3 col-sm-6'>
             <h3>Start Timer</h3>
-            <div class="form-group">
-              <form>
-                <div class="form-group row">
-                  <div class="col-xs-2">
-                    <label>Hours</label>
-                    <input class="form-control" type="number" id="hours" maxlength="2" min="0" max="59" type="text">
+              <form data-toggle="validator" role="form" novalidate="true">
+                <div class="row">
+                  <div class="form-group col-xs-3">
+                    <label for="inputHours" class="control-label">Hours</label>
+                    <input type="text" pattern="^[0-5]?[0-9]$" maxlength="2" class="form-control" id="hours" placeholder="0-59" data-error="Incorrect!">
+                    <div class="help-block with-errors"></div>
                   </div>
-                  <div class="col-xs-2">
-                    <label>Minutes</label>
-                    <input class="form-control" type="number" id="minutes" maxlength="2" min="0" max="59" type="text">
+                  <div class="form-group col-xs-3">
+                    <label for="inputMinutes" class="control-label">Minutes</label>
+                    <input type="text" pattern="^[0-5]?[0-9]$" maxlength="2" class="form-control" id="minutes" placeholder="0-59" data-error="Incorrect!">
+                    <div class="help-block with-errors"></div>
                   </div>
-                  <div class="col-xs-2">
-                    <label>Seconds</label>
-                    <input class="form-control" type="number" id="seconds" maxlength="2" min="0" max="59" type="text">
+                  <div class="form-group col-xs-3">
+                    <label for="inputSeconds" class="control-label">Seconds</label>
+                    <input type="text" pattern="^[0-5]?[0-9]$" maxlength="2" class="form-control" id="seconds" placeholder="0-59" data-error="Incorrect!">
+                    <div class="help-block with-errors"></div>
                   </div>
                 </div>
-                <button type="submit" id="submitbtntimer" class="btn btn-primary" style="margin:10;">Submit</button>
+                <div class="form-group">
+                  <button type="submit" id="submitbtntimer" class="btn btn-primary" style="margin:10;">Submit</button>
+                </div>
               </form>
-            </div>
           </div>
         </div>
             <div class="row timer hidden well" style="margin-top:5px;margin-left:0px;margin-right:0px;margin-bottom:0px;">
@@ -173,10 +176,10 @@ const clock = `
     clock.start();
     return false;
   });
-$("#btnclose").on("click", function() {
-  audio.pause();
-  clock.reset();
-});
+  $("#btnclose").on("click", function() {
+    audio.pause();
+    clock.reset();
+  });
     function deleteAlarm(e){
       $.ajax({
               type: "post",
