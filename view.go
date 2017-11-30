@@ -93,15 +93,15 @@ const clock = `
                 <div class="form-group row">
                   <div class="col-xs-2">
                     <label>Hours</label>
-                    <input class="form-control" id="hours" type="text">
+                    <input class="form-control" type="number" id="hours" maxlength="2" min="0" max="59" type="text">
                   </div>
                   <div class="col-xs-2">
                     <label>Minutes</label>
-                    <input class="form-control" id="minutes" type="text">
+                    <input class="form-control" type="number" id="minutes" maxlength="2" min="0" max="59" type="text">
                   </div>
                   <div class="col-xs-2">
                     <label>Seconds</label>
-                    <input class="form-control" id="seconds" type="text">
+                    <input class="form-control" type="number" id="seconds" maxlength="2" min="0" max="59" type="text">
                   </div>
                 </div>
                 <button type="submit" id="submitbtntimer" class="btn btn-primary" style="margin:10;">Submit</button>
