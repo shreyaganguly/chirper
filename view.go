@@ -4,11 +4,11 @@ const clock = `
 <html>
 
 <head>
-<style>
-.backgroundOrange{
-        background-color: orange !important;
+  <style>
+    .backgroundOrange {
+      background-color: orange !important;
     }
-</style>
+  </style>
   <title></title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -36,73 +36,91 @@ const clock = `
 
 <body>
   <div class="container">
-    <div class="row">
-      <div class='col-sm-5'>
-        <h3>Set Alarm</h3>
-        <div class="form-group">
-          <form id="datetimepickerform" method="post">
-
-            <label for="dateandtime">Set Date And Time For Alarm</label>
-            <div class='input-group date' id='datetimepicker'>
-              <input type='text' class="form-control" name="datetime" value="" />
-              <span class="input-group-addon">
-            <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-            </div>
-        </div>
-        <button type="submit" id="submitbtn" class="btn btn-primary" style="margin:10;">Submit</button>
-        </form>
-        {{ $alarmedTimeStamp := .TimeStamp }}
-        <div id="alarmview">
-        <ul class="list-group">
-          {{ range .Alarms}}
-            {{ if eq $alarmedTimeStamp .TimeStamp }}
-              <li class="list-group-item" id="alarmed">{{ .DateTime }}
-                <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-                <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
-              </li>
-            {{ else }}
-              <li class="list-group-item">{{ .DateTime }}
-                <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-                <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
-              </li>
-            {{ end }}
-          {{ end }}
-        </ul>
-        </div>
-      </div>
-      <div class='col-sm-7'>
-        <h3>Start Timer</h3>
-        <div class="form-group">
-          <form>
-            <div class="form-group row">
-              <div class="col-xs-2">
-                <label>Hours</label>
-                <input class="form-control" id="hours" type="text">
-              </div>
-              <div class="col-xs-2">
-                <label>Minutes</label>
-                <input class="form-control" id="minutes" type="text">
-              </div>
-              <div class="col-xs-2">
-                <label>Seconds</label>
-                <input class="form-control" id="seconds" type="text">
-              </div>
-            </div>
-            <button type="submit" id="submitbtntimer" class="btn btn-primary" style="margin:10;">Submit</button>
-          </form>
-        </div>
-        <div class="row timer hidden">
-          <div class="col-sm-10">
-        	<div class="clock"></div>
-        </div>
-        <div class="col-sm-2">
-          <button type="button" class="btn btn-warning" style="margin-top:40px;" id="btnclose">Close</button>
-        </div>
-      </div>
-
-    </div>
   </div>
+  <div class="container">
+    <h3>Tabs</h3>
+    <ul class="nav nav-tabs nav-justified">
+      <li class="active"><a data-toggle="tab" href="#alarmsection">Alarm</a></li>
+      <li><a data-toggle="tab" href="#timersection">Timer</a></li>
+    </ul>
+  </div>
+  <div class="tab-content">
+    <div id="alarmsection" class="tab-pane fade in active">
+      <div class="container">
+        <div class="row well" style="margin:0px;">
+          <div class='col-sm-offset-3 col-sm-6'>
+            <h3>Set Alarm</h3>
+            <div class="form-group">
+              <form id="datetimepickerform" method="post">
+
+                <label for="dateandtime">Set Date And Time For Alarm</label>
+                <div class='input-group date' id='datetimepicker'>
+                  <input type='text' class="form-control" name="datetime" value="" />
+                  <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+                </div>
+            </div>
+            <button type="submit" id="submitbtn" class="btn btn-primary" style="margin:10;">Submit</button>
+            </form>
+            {{ $alarmedTimeStamp := .TimeStamp }}
+            <div id="alarmview">
+              <ul class="list-group">
+                {{ range .Alarms}} {{ if eq $alarmedTimeStamp .TimeStamp }}
+                <li class="list-group-item" id="alarmed">{{ .DateTime }}
+                  <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                  <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                </li>
+                {{ else }}
+                <li class="list-group-item">{{ .DateTime }}
+                  <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                  <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                </li>
+                {{ end }} {{ end }}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="timersection" class="tab-pane fade">
+      <div class="container">
+        <div class="row well" style="margin:0px;">
+          <div class='col-sm-offset-3 col-sm-6'>
+            <h3>Start Timer</h3>
+            <div class="form-group">
+              <form>
+                <div class="form-group row">
+                  <div class="col-xs-2">
+                    <label>Hours</label>
+                    <input class="form-control" id="hours" type="text">
+                  </div>
+                  <div class="col-xs-2">
+                    <label>Minutes</label>
+                    <input class="form-control" id="minutes" type="text">
+                  </div>
+                  <div class="col-xs-2">
+                    <label>Seconds</label>
+                    <input class="form-control" id="seconds" type="text">
+                  </div>
+                </div>
+                <button type="submit" id="submitbtntimer" class="btn btn-primary" style="margin:10;">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+            <div class="row timer hidden well" style="margin-top:5px;margin-left:0px;margin-right:0px;margin-bottom:0px;">
+              <div class="col-sm-offset-3 col-sm-7">
+                <div class="clock"></div>
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-warning" style="margin-top:40px;" id="btnclose">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 <script>
   var audio = new Audio({{ .SoundFile }});
@@ -131,13 +149,11 @@ const clock = `
       });
   });
   $("#submitbtntimer").on("click", function() {
-    alert("Cam hererere");
     audio.pause();
     var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
     var minute = isNaN(parseInt($("#minutes").val())) ? 0 : parseInt($("#minutes").val()) * 60
     var second = isNaN(parseInt($("#seconds").val())) ? 0 : parseInt($("#seconds").val())
     $(".timer").removeClass("hidden");
-    alert("Cam hererere");
     clock = $(".clock").FlipClock({
       clockFace: "HourlyCounter",
       autoStart: false,
