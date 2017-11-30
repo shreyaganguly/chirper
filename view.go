@@ -19,7 +19,6 @@ const clock = `
   <link href="https://eonasdan.github.io/bootstrap-datetimepicker/css/prettify-1.0.css" rel="stylesheet">
   <link href="https://eonasdan.github.io/bootstrap-datetimepicker/css/base.css" rel="stylesheet">
   <link href="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
-
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -150,12 +149,18 @@ const clock = `
                 $("#alarmview").html(result);
               },
       });
+      $('#datetimepicker').data('DateTimePicker').date(new Date())
+      return false;
+
   });
   $("#submitbtntimer").on("click", function() {
     audio.pause();
     var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
     var minute = isNaN(parseInt($("#minutes").val())) ? 0 : parseInt($("#minutes").val()) * 60
     var second = isNaN(parseInt($("#seconds").val())) ? 0 : parseInt($("#seconds").val())
+    $("#hours").val("")
+    $("#minutes").val("")
+    $("#seconds").val("")
     $(".timer").removeClass("hidden");
     clock = $(".clock").FlipClock({
       clockFace: "HourlyCounter",
