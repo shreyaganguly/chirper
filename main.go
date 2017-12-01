@@ -8,10 +8,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 	"time"
 
 	"github.com/jaschaephraim/lrserver"
+	"github.com/shreyaganguly/chirper/packed"
 	"github.com/unrolled/render"
 )
 
@@ -30,8 +32,48 @@ var (
 var (
 	host      = flag.String("b", "0.0.0.0", "Hostname or IP address to start")
 	port      = flag.Int("p", 8080, "Bind port for public web")
-	soundFile = flag.String("s", "check.mp3", "Sound fot the alarm")
+	soundFile = flag.String("s", "check.mp3", "Sound for the alarm")
 )
+
+const (
+	applicationJavaScript = "application/javascript"
+	contentType           = "Content-Type"
+	textCSS               = "text/css"
+	imageSVG              = "image/svg+xml"
+	imageJPG              = "image/jpeg"
+	imagePNG              = "image/png"
+)
+
+var assetMap = map[string]string{
+	".js":  applicationJavaScript,
+	".css": textCSS,
+	".svg": imageSVG,
+	".jpg": imageJPG,
+	".png": imagePNG,
+}
+
+//AssetHandler handles the asset and set the header content
+func assetHandler(w http.ResponseWriter, r *http.Request) {
+	asset := r.URL.Path[1:]
+
+	ext := path.Ext(r.URL.Path)
+	data, err := packed.Asset(asset)
+	if err != nil {
+		fmt.Println("Error ", err)
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	mt, ok := assetMap[ext]
+	if ok {
+		w.Header().Set(contentType, mt)
+	} else {
+		w.Header().Set(contentType, "text/plain")
+	}
+
+	w.Header().Set("Cache-Control", "public, max-age=31536000")
+	w.Write(data)
+}
 
 func alarmHandler(w http.ResponseWriter, r *http.Request) {
 	var playing bool
@@ -130,36 +172,6 @@ func soundHandler(w http.ResponseWriter, r *http.Request) {
 	io.Copy(w, file)
 }
 
-func timerHandler(w http.ResponseWriter, r *http.Request) {
-	rndr := render.New()
-	data := struct {
-		SoundFile string
-	}{
-		*soundFile,
-	}
-	rndr.HTML(w, http.StatusOK, "timer", data)
-}
-
-func jsHandler(w http.ResponseWriter, r *http.Request) {
-	file, err := os.Open("flipclock.min.js")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer file.Close()
-	io.Copy(w, file)
-}
-
-func cssHandler(w http.ResponseWriter, r *http.Request) {
-	file, err := os.Open("flipclock.css")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer file.Close()
-	io.Copy(w, file)
-}
-
 func main() {
 	flag.Parse()
 	lr = lrserver.New("chirper", lrserver.DefaultPort)
@@ -171,10 +183,8 @@ func main() {
 	http.HandleFunc("/set", setAlarmHandler)
 	http.HandleFunc("/snooze", snoozeAlarmHandler)
 	http.HandleFunc("/delete", deleteAlarmHandler)
-	http.HandleFunc("/timer", timerHandler)
 	http.HandleFunc(fmt.Sprintf("/%s", *soundFile), soundHandler)
-	http.HandleFunc("/flipclock.min.js", jsHandler)
-	http.HandleFunc("/flipclock.css", cssHandler)
+	http.HandleFunc("/assets/", assetHandler)
 	log.Println("Starting Server at", addr)
 	go checkForAlarm()
 	lr.Reload("")
