@@ -1,5 +1,6 @@
 package views
 
+//Chirper contains teh view of the alarm and timer
 const Chirper = `
 <html>
 
@@ -35,9 +36,7 @@ const Chirper = `
 
 <body>
   <div class="container">
-  </div>
-  <div class="container">
-    <h3>Tabs</h3>
+    <h3 style="margin-bottom:24px;text-align:center;">Your Chirper</h3>
     <ul class="nav nav-tabs nav-justified">
       <li class="active"><a data-toggle="tab" href="#alarmsection">Alarm</a></li>
       <li><a data-toggle="tab" href="#timersection">Timer</a></li>
@@ -51,7 +50,6 @@ const Chirper = `
             <h3>Set Alarm</h3>
             <div class="form-group">
               <form id="datetimepickerform" method="post">
-
                 <label for="dateandtime">Set Date And Time For Alarm</label>
                 <div class='input-group date' id='datetimepicker'>
                   <input type='text' class="form-control" name="datetime" value="" />
@@ -85,6 +83,10 @@ const Chirper = `
     <div id="timersection" class="tab-pane fade">
       <div class="container">
         <div class="row well" style="margin:0px;">
+          <div class="timer-error alert alert-danger fade in alert-dismissable hidden">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+            <strong>Error!</strong> Timer cannot start at 0.
+          </div>
           <div class='col-sm-offset-3 col-sm-6'>
             <h3>Start Timer</h3>
               <form data-toggle="validator" role="form" novalidate="true">
@@ -157,6 +159,11 @@ const Chirper = `
     var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
     var minute = isNaN(parseInt($("#minutes").val())) ? 0 : parseInt($("#minutes").val()) * 60
     var second = isNaN(parseInt($("#seconds").val())) ? 0 : parseInt($("#seconds").val())
+    if (hour === 0 && minute === 0 && second === 0) {
+      $(".timer-error").removeClass("hidden");
+      return false;
+    }
+    $(".timer-error").addClass("hidden");
     $("#hours").val("")
     $("#minutes").val("")
     $("#seconds").val("")
