@@ -1,6 +1,6 @@
 ## chirper
 
-Chirper is a simple application that lets you set alarm and timer in your desktop. You can set multiple alarms, snooze your alarms. You can also set timers. So, you can get rid off your dependancies if setting your alarm or reminder on phone and instead let `chirper` chirp for you at your set time. ;)
+Chirper is a simple application that lets you set alarm and timer in your desktop/laptop to remind you off important tasks while working. You can set multiple alarms, snooze your alarms or delete them. You can also set timers. So, you can get rid of your dependancies of setting your alarm or reminder on phone and instead let `chirper` chirp for you at your set time. ;)
 
 ### Run
 
