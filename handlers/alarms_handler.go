@@ -39,15 +39,17 @@ func ChirperHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	data := struct {
-		SoundFile string
-		Alarms    []*alarm
-		Playing   bool
-		TimeStamp int64
+		SoundFile      string
+		Alarms         []*alarm
+		Playing        bool
+		TimeStamp      int64
+		SnoozeInterval int
 	}{
 		sound,
 		alarms,
 		playing,
 		timestamp,
+		snoozeTime,
 	}
 	err = tmpl.Execute(w, data)
 	if err != nil {

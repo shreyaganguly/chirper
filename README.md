@@ -10,3 +10,5 @@ $ chirper -b <ip-address-of-chirper-server>(default localhost) -p <port-number-o
 ```
 
 Now hit `ip-address:port` in your browser and just start setting your tiem and let it chirp!
+
+> P.S : Go Version should be from 1.8 onwards

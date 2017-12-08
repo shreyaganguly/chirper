@@ -93,7 +93,7 @@ const Chirper = `
                 <div class="row">
                   <div class="form-group col-xs-3">
                     <label for="inputHours" class="control-label">Hours</label>
-                    <input type="text" pattern="^[0-5]?[0-9]$" maxlength="2" class="form-control" id="hours" placeholder="0-59" data-error="Incorrect!">
+                    <input type="text" pattern="^[0-2]?[0-3]$" maxlength="2" class="form-control" id="hours" placeholder="0-23" data-error="Incorrect!">
                     <div class="help-block with-errors"></div>
                   </div>
                   <div class="form-group col-xs-3">
@@ -182,7 +182,7 @@ const Chirper = `
         }
       }
     });
-    clock.setTime(hour + minute + second);
+    clock.setTime(hour + minute + second - 1);
     clock.setCountdown(true);
     clock.start();
     return false;
@@ -210,7 +210,7 @@ const Chirper = `
               type: "post",
               url: "/snooze",
               dataType: 'html',
-              data: {timestamp: e.getAttribute('value'), time: moment.utc(e.getAttribute('time'),'DD/MM/YYYY hh:mm A').add(5,'minutes').format('DD/MM/YYYY hh:mm A')},
+              data: {timestamp: e.getAttribute('value'), time: moment.utc(e.getAttribute('time'),'DD/MM/YYYY hh:mm A').add({{ .SnoozeInterval }},'minutes').format('DD/MM/YYYY hh:mm A')},
               success: function(result){
                 $("#alarmview").html(result);
                 if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
