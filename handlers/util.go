@@ -59,7 +59,7 @@ func removeAlarm(t int64) {
 func snoozeAlarm(time string, timestamp int64) {
 	for _, v := range alarms {
 		if v.TimeStamp == timestamp && v.Playing {
-			v.TimeStamp += 5 * 60
+			v.TimeStamp += int64(snoozeTime) * 60
 			v.DateTime = time
 			v.Playing = false
 			return

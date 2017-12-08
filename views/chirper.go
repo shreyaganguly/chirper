@@ -93,7 +93,7 @@ const Chirper = `
                 <div class="row">
                   <div class="form-group col-xs-3">
                     <label for="inputHours" class="control-label">Hours</label>
-                    <input type="text" pattern="^[0-2]?[0-3]$" maxlength="2" class="form-control" id="hours" placeholder="0-23" data-error="Incorrect!">
+                    <input type="text" pattern="^[0-1]?[0-9]|2[0-3]$" maxlength="2" class="form-control" id="hours" placeholder="0-23" data-error="Incorrect!">
                     <div class="help-block with-errors"></div>
                   </div>
                   <div class="form-group col-xs-3">
