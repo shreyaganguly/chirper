@@ -32,6 +32,19 @@ const Chirper = `
   <script src="/assets/js/flipclock.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
   <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
+  <!-- Bootstrap stylesheet -->
+
+<!-- ClockPicker Stylesheet -->
+<link rel="stylesheet" type="text/css" href="https://weareoutman.github.io/clockpicker/dist/bootstrap-clockpicker.min.css">
+  <!-- Or just a input -->
+
+
+  <!-- jQuery and Bootstrap scripts -->
+  <script type="text/javascript" src="https://weareoutman.github.io/clockpicker/assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="https://weareoutman.github.io/clockpicker/assets/js/bootstrap.min.js"></script>
+
+  <!-- ClockPicker script -->
+  <script type="text/javascript" src="https://weareoutman.github.io/clockpicker/dist/bootstrap-clockpicker.min.js"></script>
 </head>
 
 <body>
@@ -125,8 +138,61 @@ const Chirper = `
         </div>
       </div>
     </div>
+<!-- Input group, just add class 'clockpicker', and optional data-* -->
+<div class="input-group clockpicker" data-placement="right" data-align="top" data-autoclose="true">
+	<input type="text" class="form-control" value="09:32">
+	<span class="input-group-addon">
+		<span class="glyphicon glyphicon-time"></span>
+	</span>
+</div>
 </body>
 <script>
+// var input = $('#demo-input').clockpicker({
+// 	placement: 'bottom',
+// 	align: 'left',
+// 	autoclose: true,
+// 	'default': 'now'
+// });
+
+$('.clockpicker').clockpicker({
+		donetext: 'Done',
+    placement: 'bottom',
+  	align: 'left',
+  	autoclose: true,
+  	'default': 'now',
+		init: function() {
+			console.log("colorpicker initiated");
+		},
+		beforeShow: function() {
+			console.log("before show");
+		},
+		afterShow: function() {
+			console.log("after show");
+		},
+		beforeHide: function() {
+			console.log("before hide");
+		},
+		afterHide: function() {
+			console.log("after hide");
+		},
+		beforeHourSelect: function() {
+			console.log("before hour selected");
+		},
+		afterHourSelect: function() {
+			console.log("after hour selected");
+		},
+		beforeDone: function() {
+			console.log("before done");
+		},
+		afterDone: function() {
+			console.log("after done");
+		}
+	})
+	.find('input').change(function(){
+		console.log(this.value);
+	});
+
+
   var audio = new Audio({{ .SoundFile }});
   var clock;
   {{ if .Playing }}
@@ -134,12 +200,12 @@ const Chirper = `
     audio.play();
   {{ end }}
   var currentDate = new Date();
-  $(function() {
-    $('#datetimepicker').datetimepicker({
-      minDate: currentDate,
-      format: "DD/MM/YYYY hh:mm A"
-    });
-  });
+  // $(function() {
+  //   $('#datetimepicker').datetimepicker({
+  //     minDate: currentDate,
+  //     format: "DD/MM/YYYY hh:mm A"
+  //   });
+  // });
     $("#submitbtn").on("click", function(){
       $.ajax({
               type: "post",
