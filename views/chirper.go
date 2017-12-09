@@ -40,8 +40,6 @@ const Chirper = `
 
 
   <!-- jQuery and Bootstrap scripts -->
-  <script type="text/javascript" src="https://weareoutman.github.io/clockpicker/assets/js/jquery.min.js"></script>
-  <script type="text/javascript" src="https://weareoutman.github.io/clockpicker/assets/js/bootstrap.min.js"></script>
 
   <!-- ClockPicker script -->
   <script type="text/javascript" src="https://weareoutman.github.io/clockpicker/dist/bootstrap-clockpicker.min.js"></script>
@@ -147,19 +145,12 @@ const Chirper = `
 </div>
 </body>
 <script>
-// var input = $('#demo-input').clockpicker({
-// 	placement: 'bottom',
-// 	align: 'left',
-// 	autoclose: true,
-// 	'default': 'now'
-// });
 
 $('.clockpicker').clockpicker({
 		donetext: 'Done',
     placement: 'bottom',
   	align: 'left',
-  	autoclose: true,
-  	'default': 'now',
+  	default: 'now',
 		init: function() {
 			console.log("colorpicker initiated");
 		},
@@ -200,12 +191,10 @@ $('.clockpicker').clockpicker({
     audio.play();
   {{ end }}
   var currentDate = new Date();
-  // $(function() {
-  //   $('#datetimepicker').datetimepicker({
-  //     minDate: currentDate,
-  //     format: "DD/MM/YYYY hh:mm A"
-  //   });
-  // });
+    $('#datetimepicker').datetimepicker({
+      minDate: currentDate,
+      format: "DD/MM/YYYY hh:mm A"
+    });
     $("#submitbtn").on("click", function(){
       $.ajax({
               type: "post",
