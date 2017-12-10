@@ -50,11 +50,26 @@ const Chirper = `
     <h3 style="margin-bottom:24px;text-align:center;">Your Chirper</h3>
     <ul class="nav nav-tabs nav-justified">
       <li class="active"><a data-toggle="tab" href="#alarmsection">Alarm</a></li>
+      <li><a data-toggle="tab" href="#remindersection">Reminder</a></li>
       <li><a data-toggle="tab" href="#timersection">Timer</a></li>
     </ul>
   </div>
   <div class="tab-content">
     <div id="alarmsection" class="tab-pane fade in active">
+      <div class="container">
+        <div class="row well" style="margin:0px;">
+          <div class='col-sm-offset-3 col-sm-6'>
+          <div class="input-group clockpicker">
+            <input type="text" class="form-control" disabled>
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-time"></span>
+            </span>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="remindersection" class="tab-pane fade">
       <div class="container">
         <div class="row well" style="margin:0px;">
           <div class='col-sm-offset-3 col-sm-6'>
@@ -136,53 +151,20 @@ const Chirper = `
         </div>
       </div>
     </div>
-<!-- Input group, just add class 'clockpicker', and optional data-* -->
-<div class="input-group clockpicker" data-placement="right" data-align="top" data-autoclose="true">
-	<input type="text" class="form-control" value="09:32">
-	<span class="input-group-addon">
-		<span class="glyphicon glyphicon-time"></span>
-	</span>
 </div>
 </body>
 <script>
 
+
 $('.clockpicker').clockpicker({
-		donetext: 'Done',
-    placement: 'bottom',
-  	align: 'left',
-  	default: 'now',
-		init: function() {
-			console.log("colorpicker initiated");
-		},
-		beforeShow: function() {
-			console.log("before show");
-		},
-		afterShow: function() {
-			console.log("after show");
-		},
-		beforeHide: function() {
-			console.log("before hide");
-		},
-		afterHide: function() {
-			console.log("after hide");
-		},
-		beforeHourSelect: function() {
-			console.log("before hour selected");
-		},
-		afterHourSelect: function() {
-			console.log("after hour selected");
-		},
-		beforeDone: function() {
-			console.log("before done");
-		},
-		afterDone: function() {
-			console.log("after done");
-		}
-	})
-	.find('input').change(function(){
+  placement: 'bottom',
+  align: 'left',
+  donetext: 'Done',
+  twelvehour: 'true',
+  default: 'now',
+}).find('input').change(function(){
 		console.log(this.value);
 	});
-
 
   var audio = new Audio({{ .SoundFile }});
   var clock;
