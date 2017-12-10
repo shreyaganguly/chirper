@@ -15,34 +15,20 @@ const Chirper = `
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/assets/css/flipclock.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link href="https://eonasdan.github.io/bootstrap-datetimepicker/css/prettify-1.0.css" rel="stylesheet">
-  <link href="https://eonasdan.github.io/bootstrap-datetimepicker/css/base.css" rel="stylesheet">
-  <link href="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
-  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
+  <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+  <link href="/assets/css/prettify.css" rel="stylesheet">
+  <link href="/assets/css/base.css" rel="stylesheet">
+  <link href="/assets/css/bootstrap-datetimepicker.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-clockpicker.min.css">
   <script src="http://localhost:35729/livereload.js"></script>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="http://1000hz.github.io/bootstrap-validator/dist/validator.min.js"></script>
+  <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+  <script src="/assets/js/validator.min.js"></script>
   <script src="/assets/js/flipclock.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
-  <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
-  <!-- Bootstrap stylesheet -->
-
-<!-- ClockPicker Stylesheet -->
-<link rel="stylesheet" type="text/css" href="https://weareoutman.github.io/clockpicker/dist/bootstrap-clockpicker.min.css">
-  <!-- Or just a input -->
-
-
-  <!-- jQuery and Bootstrap scripts -->
-
-  <!-- ClockPicker script -->
-  <script type="text/javascript" src="https://weareoutman.github.io/clockpicker/dist/bootstrap-clockpicker.min.js"></script>
+  <script src="/assets/js/moment-with-locales.js"></script>
+  <script src="/assets/js/bootstrap-datetimepicker.js"></script>
+  <script type="text/javascript" src="/assets/js/bootstrap-clockpicker.min.js"></script>
 </head>
 
 <body>
