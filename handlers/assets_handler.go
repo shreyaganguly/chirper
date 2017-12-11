@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"path"
 
@@ -32,7 +31,6 @@ func AssetHandler(w http.ResponseWriter, r *http.Request) {
 	ext := path.Ext(r.URL.Path)
 	data, err := packed.Asset(asset)
 	if err != nil {
-		fmt.Println("Error ", err)
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}

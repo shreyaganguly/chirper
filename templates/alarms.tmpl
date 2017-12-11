@@ -1,10 +1,17 @@
 <div>
-<ul class="list-group">
-  {{ range .}}    
-      <li class="list-group-item">{{ .DateTime }}
-        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-        <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
-      </li>
-  {{ end }}
-</ul>
+  <ul class="list-group">
+    {{ range .}}
+      {{ if eq .Purpose ""}}
+        <li class="list-group-item" id="alarmed">{{ .DateTime }}
+          <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+          <span class="pull-right hidden" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+        </li>
+      {{ else }}
+        <li class="list-group-item" id="alarmed">{{ .DateTime }} ({{ .Purpose }})
+          <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+          <span class="pull-right hidden" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+        </li>
+      {{ end }}
+    {{ end }}
+  </ul>
 </div>

@@ -16,6 +16,7 @@ type alarm struct {
 	TimeStamp int64
 	Playing   bool
 	snooze    int64
+	Purpose   string
 }
 
 var (
@@ -62,6 +63,7 @@ func ChirperHandler(w http.ResponseWriter, r *http.Request) {
 func SetAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	dateTime := strings.Split(r.FormValue("datetime"), " ")
+	purpose := r.FormValue("purpose")
 	dateParts := strings.Split(dateTime[0], "/")
 	timeParts := strings.Split(dateTime[1], ":")
 	hours := convertor(timeParts[0])
@@ -77,7 +79,7 @@ func SetAlarmHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	timeStamp := time.Date(convertor(dateParts[2]), time.Month(convertor(dateParts[1])), convertor(dateParts[0]), hours, convertor(timeParts[1]), 0, 0, loc)
-	alarms = append(alarms, &alarm{r.FormValue("datetime"), timeStamp.Unix(), false, 0})
+	alarms = append(alarms, &alarm{r.FormValue("datetime"), timeStamp.Unix(), false, 0, purpose})
 	rndr := render.New()
 	rndr.HTML(w, http.StatusOK, "alarms", alarms)
 }

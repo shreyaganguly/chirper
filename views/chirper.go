@@ -60,32 +60,52 @@ const Chirper = `
         <div class="row well" style="margin:0px;">
           <div class='col-sm-offset-3 col-sm-6'>
             <h3>Set Alarm</h3>
-            <div class="form-group">
-              <form id="datetimepickerform" method="post">
-                <label for="dateandtime">Set Date And Time For Alarm</label>
-                <div class='input-group date' id='datetimepicker'>
-                  <input type='text' class="form-control" name="datetime" value="" />
-                  <span class="input-group-addon">
-              <span class="glyphicon glyphicon-calendar"></span>
-                  </span>
-                </div>
-            </div>
+            <form id="datetimepickerform" method="post">
+              <div class="form-group">
+                <label for="purpose">Purpose(Optional):</label>
+                <input type="text" class="form-control" id="purpose" name="purpose" value="">
+              </div>
+              <div class="form-group">
+                  <label for="dateandtime">Set Date And Time For Alarm</label>
+                  <div class='input-group date' id='datetimepicker'>
+                    <input type='text' class="form-control" name="datetime" value="" />
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                  </div>
+              </div>
             <button type="submit" id="submitbtn" class="btn btn-primary" style="margin:10;">Submit</button>
             </form>
             {{ $alarmedTimeStamp := .TimeStamp }}
             <div id="alarmview">
               <ul class="list-group">
-                {{ range .Alarms}} {{ if eq $alarmedTimeStamp .TimeStamp }}
-                <li class="list-group-item" id="alarmed">{{ .DateTime }}
-                  <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-                  <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
-                </li>
-                {{ else }}
-                <li class="list-group-item">{{ .DateTime }}
-                  <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-                  <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
-                </li>
-                {{ end }} {{ end }}
+                {{ range .Alarms}}
+                  {{ if eq $alarmedTimeStamp .TimeStamp }}
+                    {{ if eq .Purpose ""}}
+                      <li class="list-group-item" id="alarmed">{{ .DateTime }}
+                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                      </li>
+                    {{ else }}
+                      <li class="list-group-item" id="alarmed">{{ .DateTime }} ({{ .Purpose }})
+                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                      </li>
+                    {{ end }}
+                  {{ else }}
+                    {{ if eq .Purpose ""}}
+                      <li class="list-group-item">{{ .DateTime }}
+                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                      </li>
+                    {{ else }}
+                      <li class="list-group-item">{{ .DateTime }} ({{ .Purpose }})
+                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                      </li>
+                    {{ end }}
+                  {{ end }}
+                {{ end }}
               </ul>
             </div>
           </div>
