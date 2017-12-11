@@ -45,12 +45,20 @@ const Chirper = `
       <div class="container">
         <div class="row well" style="margin:0px;">
           <div class='col-sm-offset-3 col-sm-6'>
-          <div class="input-group clockpicker">
-            <input type="text" class="form-control" disabled>
-            <span class="input-group-addon">
-              <span class="glyphicon glyphicon-time"></span>
-            </span>
-          </div>
+            <h3>Set Alarm</h3>
+            <form id="alarmform" method="post">
+              <div class="form-group">
+                <div class="input-group clockpicker">
+                <input type="text" class="form-control alarmvalue" disabled>
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-time"></span>
+                </span>
+                </div>
+              </div>
+              <button type="submit" id="submitbtnalarm" class="btn btn-primary" style="margin:10;">Submit</button>
+            </form>
+            <div id="alarmview">
+            </div>
           </div>
         </div>
       </div>
@@ -59,7 +67,7 @@ const Chirper = `
       <div class="container">
         <div class="row well" style="margin:0px;">
           <div class='col-sm-offset-3 col-sm-6'>
-            <h3>Set Alarm</h3>
+            <h3>Set Reminder</h3>
             <form id="datetimepickerform" method="post">
               <div class="form-group">
                 <label for="purpose">Purpose(Optional):</label>
@@ -77,7 +85,7 @@ const Chirper = `
             <button type="submit" id="submitbtn" class="btn btn-primary" style="margin:10;">Submit</button>
             </form>
             {{ $alarmedTimeStamp := .TimeStamp }}
-            <div id="alarmview">
+            <div id="reminderview">
               <ul class="list-group">
                 {{ range .Alarms}}
                   {{ if eq $alarmedTimeStamp .TimeStamp }}
@@ -190,13 +198,27 @@ $('.clockpicker').clockpicker({
               dataType: 'html',
               data: $("#datetimepickerform").serialize(),
               success: function(result){
-                $("#alarmview").html(result);
+                $("#reminderview").html(result);
               },
       });
       $('#datetimepicker').data('DateTimePicker').date(new Date())
       return false;
 
   });
+
+  $("#submitbtnalarm").on("click", function(){
+    $.ajax({
+            type: "post",
+            url: "/setalarm",
+            dataType: 'html',
+            data: {alarmtime: $('.alarmvalue').val()},
+            success: function(result){
+              $("#alarmview").html(result);
+            },
+    });
+    return false;
+
+});
   $("#submitbtntimer").on("click", function() {
     audio.pause();
     var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
@@ -241,7 +263,7 @@ $('.clockpicker').clockpicker({
               dataType: 'html',
               data: {timestamp: e.getAttribute('value')},
               success: function(result){
-                $("#alarmview").html(result);
+                $("#reminderview").html(result);
                 if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
                   audio.pause();
                 }
@@ -255,7 +277,7 @@ $('.clockpicker').clockpicker({
               dataType: 'html',
               data: {timestamp: e.getAttribute('value'), time: moment.utc(e.getAttribute('time'),'DD/MM/YYYY hh:mm A').add({{ .SnoozeInterval }},'minutes').format('DD/MM/YYYY hh:mm A')},
               success: function(result){
-                $("#alarmview").html(result);
+                $("#reminderview").html(result);
                 if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
                   audio.pause();
                 }

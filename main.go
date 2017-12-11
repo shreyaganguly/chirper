@@ -30,6 +30,7 @@ func main() {
 	http.HandleFunc("/set", handlers.SetAlarmHandler)
 	http.HandleFunc("/snooze", handlers.SnoozeAlarmHandler)
 	http.HandleFunc("/delete", handlers.DeleteAlarmHandler)
+	http.HandleFunc("/setalarm", handlers.SetHandler)
 	http.HandleFunc(fmt.Sprintf("/%s", *soundFile), handlers.SoundHandler)
 	http.HandleFunc("/assets/", handlers.AssetHandler)
 	log.Println("Starting Server at", addr)
