@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -19,14 +18,13 @@ var (
 	alarmClocks []*alarmClock
 )
 
+//SetHandler sets the alarm clock
 func SetHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	fmt.Println("*****")
 	var prefixedString string
 	timeNow := time.Now()
 
 	alarmTime := r.FormValue("alarmtime")
-	fmt.Println(r.FormValue("alarmtime"))
 	if strings.HasSuffix(alarmTime, "AM") {
 		prefixedString = "AM"
 	}
@@ -34,7 +32,6 @@ func SetHandler(w http.ResponseWriter, r *http.Request) {
 		prefixedString = "PM"
 	}
 	timeStamp := strings.TrimSuffix(alarmTime, prefixedString)
-	fmt.Println(strings.Split(timeStamp, ":"))
 	hour := convertor(strings.Split(timeStamp, ":")[0])
 	minute := convertor(strings.Split(timeStamp, ":")[1])
 	if hour == 12 && prefixedString == "AM" {
@@ -56,9 +53,6 @@ func SetHandler(w http.ResponseWriter, r *http.Request) {
 		alarmTimestamp += 24 * 60 * 60
 	}
 	alarmClocks = append(alarmClocks, &alarmClock{alarmTime, alarmTimestamp, false})
-	// for _, v := range alarmClocks {
-	// 	fmt.Printf("%#v", v)
-	// }
 	rndr := render.New()
 	rndr.HTML(w, http.StatusOK, "alarmClocks", alarmClocks)
 }

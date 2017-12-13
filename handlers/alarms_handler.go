@@ -40,11 +40,9 @@ func ChirperHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	for _, v := range alarmClocks {
-		fmt.Printf("%#v", v)
 		if v.Playing {
 			alarmPlaying = true
 			alarmTimestamp = v.Timestamp
-			fmt.Println("Matched herererere in range")
 			break
 		}
 	}

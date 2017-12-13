@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -31,7 +30,6 @@ var now int64
 func checkForTimeMatch() {
 	for _, a := range alarms {
 		if a.TimeStamp == now {
-			fmt.Println("Matched hererererere")
 			a.Playing = true
 			lr.Reload("")
 		}

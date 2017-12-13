@@ -192,7 +192,6 @@ $('.clockpicker').clockpicker({
     audioReminder.play();
   {{ end }}
   {{ if .AlarmPlaying }}
-    alert("Matched")
     audioAlarm = new Audio({{ .SoundFile }});
     audioAlarm.play();
   {{ end }}
