@@ -5,11 +5,14 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/unrolled/render"
 )
 
 type alarmClock struct {
 	AlarmTime string
 	Timestamp int64
+	Playing   bool
 }
 
 var (
@@ -20,8 +23,8 @@ func SetHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	fmt.Println("*****")
 	var prefixedString string
-	var alarmTimestamp int64
 	timeNow := time.Now()
+
 	alarmTime := r.FormValue("alarmtime")
 	fmt.Println(r.FormValue("alarmtime"))
 	if strings.HasSuffix(alarmTime, "AM") {
@@ -48,25 +51,14 @@ func SetHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if time.Now().Hour() < hour {
-		fmt.Println("TODAY")
-		alarmTimestamp = time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), hour, minute, 0, 0, loc).Unix()
-	} else if time.Now().Hour() > hour {
-		fmt.Println("NEXT DAY")
-		alarmTimestamp = time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), hour, minute, 0, 0, loc).Unix() + 24*60*60
+	alarmTimestamp := time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), hour, minute, 0, 0, loc).Unix()
+	if time.Now().Hour() > hour || (time.Now().Hour() == hour && time.Now().Minute() >= minute) {
+		alarmTimestamp += 24 * 60 * 60
 	}
-	if time.Now().Hour() == hour {
-		if time.Now().Minute() < minute {
-			fmt.Println("TODAY")
-			alarmTimestamp = time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), hour, minute, 0, 0, loc).Unix()
-		} else {
-			fmt.Println("NEXT DAY")
-			alarmTimestamp = time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), hour, minute, 0, 0, loc).Unix() + 24*60*60
-		}
-	}
-	fmt.Println("TIME ", time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), hour, minute, 0, 0, loc).Unix(), alarmTimestamp)
-	alarmClocks = append(alarmClocks, &alarmClock{alarmTime, alarmTimestamp})
-	for _, v := range alarmClocks {
-		fmt.Printf("%#v", v)
-	}
+	alarmClocks = append(alarmClocks, &alarmClock{alarmTime, alarmTimestamp, false})
+	// for _, v := range alarmClocks {
+	// 	fmt.Printf("%#v", v)
+	// }
+	rndr := render.New()
+	rndr.HTML(w, http.StatusOK, "alarmClocks", alarmClocks)
 }

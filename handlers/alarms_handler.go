@@ -25,8 +25,8 @@ var (
 
 //ChirperHandler displays the page for alarm and time
 func ChirperHandler(w http.ResponseWriter, r *http.Request) {
-	var playing bool
-	var timestamp int64
+	var playing, alarmPlaying bool
+	var timestamp, alarmTimestamp int64
 	tmpl, err := template.New("alarm").Parse(views.Chirper)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -39,17 +39,32 @@ func ChirperHandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
+	for _, v := range alarmClocks {
+		fmt.Printf("%#v", v)
+		if v.Playing {
+			alarmPlaying = true
+			alarmTimestamp = v.Timestamp
+			fmt.Println("Matched herererere in range")
+			break
+		}
+	}
 	data := struct {
 		SoundFile      string
 		Alarms         []*alarm
+		AlarmClocks    []*alarmClock
 		Playing        bool
+		AlarmPlaying   bool
 		TimeStamp      int64
+		AlarmTimeStamp int64
 		SnoozeInterval int
 	}{
 		sound,
 		alarms,
+		alarmClocks,
 		playing,
+		alarmPlaying,
 		timestamp,
+		alarmTimestamp,
 		snoozeTime,
 	}
 	err = tmpl.Execute(w, data)

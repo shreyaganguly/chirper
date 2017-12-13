@@ -49,7 +49,7 @@ const Chirper = `
             <form id="alarmform" method="post">
               <div class="form-group">
                 <div class="input-group clockpicker">
-                <input type="text" class="form-control alarmvalue" disabled>
+                <input type="text" class="form-control alarmvalue"  value="" disabled>
                 <span class="input-group-addon">
                   <span class="glyphicon glyphicon-time"></span>
                 </span>
@@ -58,6 +58,12 @@ const Chirper = `
               <button type="submit" id="submitbtnalarm" class="btn btn-primary" style="margin:10;">Submit</button>
             </form>
             <div id="alarmview">
+              <ul class="list-group">
+                {{ range .AlarmClocks}}
+                      <li class="list-group-item" id="alarmed">{{ .AlarmTime }}
+                      </li>
+                  {{ end }}
+              </ul>
             </div>
           </div>
         </div>
@@ -176,15 +182,19 @@ $('.clockpicker').clockpicker({
   donetext: 'Done',
   twelvehour: 'true',
   default: 'now',
-}).find('input').change(function(){
-		console.log(this.value);
-	});
+})
 
-  var audio = new Audio({{ .SoundFile }});
+  var audioReminder = new Audio({{ .SoundFile }});
+  var audioAlarm = new Audio({{ .SoundFile }});
   var clock;
   {{ if .Playing }}
-    audio = new Audio({{ .SoundFile }});
-    audio.play();
+    audioReminder = new Audio({{ .SoundFile }});
+    audioReminder.play();
+  {{ end }}
+  {{ if .AlarmPlaying }}
+    alert("Matched")
+    audioAlarm = new Audio({{ .SoundFile }});
+    audioAlarm.play();
   {{ end }}
   var currentDate = new Date();
     $('#datetimepicker').datetimepicker({
@@ -216,11 +226,12 @@ $('.clockpicker').clockpicker({
               $("#alarmview").html(result);
             },
     });
+    $('.alarmvalue').val("");
     return false;
 
 });
   $("#submitbtntimer").on("click", function() {
-    audio.pause();
+    audioReminder.pause();
     var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
     var minute = isNaN(parseInt($("#minutes").val())) ? 0 : parseInt($("#minutes").val()) * 60
     var second = isNaN(parseInt($("#seconds").val())) ? 0 : parseInt($("#seconds").val())
@@ -239,7 +250,7 @@ $('.clockpicker').clockpicker({
       callbacks: {
         stop: function() {
           if ($(".timer").is(":visible") === true) {
-            audio.play();
+            audioReminder.play();
           }
         },
         reset: function() {
@@ -253,7 +264,7 @@ $('.clockpicker').clockpicker({
     return false;
   });
   $("#btnclose").on("click", function() {
-    audio.pause();
+    audioReminder.pause();
     clock.reset();
   });
     function deleteAlarm(e){
@@ -265,7 +276,7 @@ $('.clockpicker').clockpicker({
               success: function(result){
                 $("#reminderview").html(result);
                 if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
-                  audio.pause();
+                  audioReminder.pause();
                 }
               },
       });
@@ -279,7 +290,7 @@ $('.clockpicker').clockpicker({
               success: function(result){
                 $("#reminderview").html(result);
                 if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
-                  audio.pause();
+                  audioReminder.pause();
                 }
               },
       });
