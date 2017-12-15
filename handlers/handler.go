@@ -54,5 +54,25 @@ func SetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	alarmClocks = append(alarmClocks, &alarmClock{alarmTime, alarmTimestamp, false})
 	rndr := render.New()
+	err = rndr.HTML(w, http.StatusOK, "alarmClocks", alarmClocks)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+//DeleteAlarmHandler deletes an already set alarm
+func DeleteAlarmHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	removeAlarm(int64(convertor(r.FormValue("timestamp"))))
+	rndr := render.New()
+	rndr.HTML(w, http.StatusOK, "alarmClocks", alarmClocks)
+}
+
+//SnoozeAlarmHandler snoozes a running alarm to after a configurable amount of time
+func SnoozeAlarmHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	snoozeAlarm(r.FormValue("time"), int64(convertor(r.FormValue("timestamp"))))
+	rndr := render.New()
 	rndr.HTML(w, http.StatusOK, "alarmClocks", alarmClocks)
 }

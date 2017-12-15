@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -97,40 +96,18 @@ func SetAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	rndr.HTML(w, http.StatusOK, "alarms", alarms)
 }
 
-//DeleteAlarmHandler deletes an already set alarm
-func DeleteAlarmHandler(w http.ResponseWriter, r *http.Request) {
+//DeleteReminderHandler deletes an already set reminder
+func DeleteReminderHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	removeAlarm(int64(convertor(r.FormValue("timestamp"))))
+	removeReminder(int64(convertor(r.FormValue("timestamp"))))
 	rndr := render.New()
 	rndr.HTML(w, http.StatusOK, "alarms", alarms)
 }
 
-//SnoozeAlarmHandler snoozes a running alarm to after a configurable amount of time
-func SnoozeAlarmHandler(w http.ResponseWriter, r *http.Request) {
+//SnoozeReminderHandler snoozes a running reminder to after a configurable amount of time
+func SnoozeReminderHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	dateTime := strings.Split(r.FormValue("time"), " ")
-	dateParts := strings.Split(dateTime[0], "/")
-	timeParts := strings.Split(dateTime[1], ":")
-	hours := convertor(timeParts[0])
-	if dateTime[2] == "PM" && hours != 12 {
-		hours += 12
-	}
-	if dateTime[2] == "AM" && hours == 12 {
-		hours = 0
-	}
-	loc, err := time.LoadLocation("Asia/Kolkata")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	timeStamp := time.Date(convertor(dateParts[2]), time.Month(convertor(dateParts[1])), convertor(dateParts[0]), hours, convertor(timeParts[1]), 0, 0, loc)
-	snoozeDuration, err := time.ParseDuration(fmt.Sprintf("%dm", snoozeTime))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	timeStamp.Add(snoozeDuration)
-	snoozeAlarm(r.FormValue("time"), int64(convertor(r.FormValue("timestamp"))))
+	snoozeReminder(r.FormValue("time"), int64(convertor(r.FormValue("timestamp"))))
 	rndr := render.New()
 	rndr.HTML(w, http.StatusOK, "alarms", alarms)
 }

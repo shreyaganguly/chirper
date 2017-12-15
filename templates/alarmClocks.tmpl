@@ -2,6 +2,8 @@
   <ul class="list-group">
     {{ range .}}
       <li class="list-group-item" id="alarmed">{{ .AlarmTime }}
+        <span class="pull-right" value={{ .Timestamp }} onClick="deleteAlarm(this,'alarm')"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+        <span class="pull-right hidden" value={{ .Timestamp }} time={{ .AlarmTime }} onClick="snoozeAlarm(this,'alarm')" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
       </li>
     {{ end }}
   </ul>

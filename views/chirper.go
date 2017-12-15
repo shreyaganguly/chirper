@@ -43,26 +43,40 @@ const Chirper = `
   <div class="tab-content">
     <div id="alarmsection" class="tab-pane fade in active">
       <div class="container">
+        <div class="alarm-error alert alert-danger fade in alert-dismissable hidden">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+          <strong>Error!</strong> Alarm Already Set!!.
+        </div>
         <div class="row well" style="margin:0px;">
           <div class='col-sm-offset-3 col-sm-6'>
             <h3>Set Alarm</h3>
             <form id="alarmform" method="post">
               <div class="form-group">
                 <div class="input-group clockpicker">
-                <input type="text" class="form-control alarmvalue"  value="" disabled>
-                <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-time"></span>
-                </span>
+                  <input type="text" class="form-control alarmvalue"  value="" disabled>
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-time"></span>
+                  </span>
                 </div>
               </div>
               <button type="submit" id="submitbtnalarm" class="btn btn-primary" style="margin:10;">Submit</button>
             </form>
+            {{ $alarmTimeStamp := .AlarmTimeStamp }}
             <div id="alarmview">
               <ul class="list-group">
                 {{ range .AlarmClocks}}
-                      <li class="list-group-item" id="alarmed">{{ .AlarmTime }}
+                  {{ if eq $alarmTimeStamp .Timestamp }}
+                      <li class="list-group-item" id="alarmclocked">{{ .AlarmTime }}
+                        <span class="pull-right" value={{ .Timestamp }} onClick="deleteAlarm(this,'alarm')"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .Timestamp }} time={{ .AlarmTime }} onClick="snoozeAlarm(this, 'alarm')" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
                       </li>
+                  {{ else }}
+                    <li class="list-group-item">{{ .AlarmTime }}
+                      <span class="pull-right" value={{ .Timestamp }} onClick="deleteAlarm(this,'alarm')"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                      <span class="pull-right hidden" value={{ .Timestamp }} time={{ .AlarmTime }} onClick="snoozeAlarm(this, 'alarm')" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                    </li>
                   {{ end }}
+                {{ end }}
               </ul>
             </div>
           </div>
@@ -82,9 +96,9 @@ const Chirper = `
               <div class="form-group">
                   <label for="dateandtime">Set Date And Time For Alarm</label>
                   <div class='input-group date' id='datetimepicker'>
-                    <input type='text' class="form-control" name="datetime" value="" />
+                    <input type='text' class="form-control" name="datetime" value="" disabled />
                     <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
+                      <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                   </div>
               </div>
@@ -97,25 +111,25 @@ const Chirper = `
                   {{ if eq $alarmedTimeStamp .TimeStamp }}
                     {{ if eq .Purpose ""}}
                       <li class="list-group-item" id="alarmed">{{ .DateTime }}
-                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-                        <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this, 'reminder')"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this, 'reminder')" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
                       </li>
                     {{ else }}
                       <li class="list-group-item" id="alarmed">{{ .DateTime }} ({{ .Purpose }})
-                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-                        <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this, 'reminder')"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .TimeStamp }} time={{ .DateTime }} onClick="snoozeAlarm(this, 'reminder')" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
                       </li>
                     {{ end }}
                   {{ else }}
                     {{ if eq .Purpose ""}}
                       <li class="list-group-item">{{ .DateTime }}
-                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-                        <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this, 'reminder')"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this, 'reminder')" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
                       </li>
                     {{ else }}
                       <li class="list-group-item">{{ .DateTime }} ({{ .Purpose }})
-                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this)"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
-                        <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this)" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
+                        <span class="pull-right" value={{ .TimeStamp }} onClick="deleteAlarm(this, 'reminder')"><i class="fa fa-times" id="clock-delete" aria-hidden="true"></i></span>
+                        <span class="pull-right hidden" value={{ .TimeStamp }} onClick="snoozeAlarm(this, 'reminder')" style="margin-right:10px;"><i class="fa fa-clock-o" id="clock-snooze" aria-hidden="true"></i></span>
                       </li>
                     {{ end }}
                   {{ end }}
@@ -266,7 +280,8 @@ $('.clockpicker').clockpicker({
     audioReminder.pause();
     clock.reset();
   });
-    function deleteAlarm(e){
+    function deleteAlarm(e,type){
+    if (type === "reminder") {
       $.ajax({
               type: "post",
               url: "/delete",
@@ -279,24 +294,60 @@ $('.clockpicker').clockpicker({
                 }
               },
       });
-    };
-    function snoozeAlarm(e){
+    } else {
       $.ajax({
               type: "post",
-              url: "/snooze",
+              url: "/deletealarm",
               dataType: 'html',
-              data: {timestamp: e.getAttribute('value'), time: moment.utc(e.getAttribute('time'),'DD/MM/YYYY hh:mm A').add({{ .SnoozeInterval }},'minutes').format('DD/MM/YYYY hh:mm A')},
+              data: {timestamp: e.getAttribute('value')},
               success: function(result){
-                $("#reminderview").html(result);
-                if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
-                  audioReminder.pause();
+                $("#alarmview").html(result);
+                if (e.getAttribute('value') == {{ .AlarmTimeStamp }} && {{ .AlarmPlaying }} === true) {
+                  audioAlarm.pause();
                 }
               },
       });
+    }
+
+    };
+    function snoozeAlarm(e, type){
+      if (type === "reminder") {
+        $.ajax({
+                type: "post",
+                url: "/snooze",
+                dataType: 'html',
+                data: {timestamp: e.getAttribute('value'), time: moment.utc(e.getAttribute('time'),'DD/MM/YYYY hh:mm A').add({{ .SnoozeInterval }},'minutes').format('DD/MM/YYYY hh:mm A')},
+                success: function(result){
+                  $("#reminderview").html(result);
+                  if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
+                    audioReminder.pause();
+                  }
+                },
+        });
+      } else {
+        $.ajax({
+                type: "post",
+                url: "/snoozealarm",
+                dataType: 'html',
+                data: {timestamp: e.getAttribute('value'), time: moment.utc(e.getAttribute('time'),'hh:mmA').add({{ .SnoozeInterval }},'minutes').format('hh:mmA')},
+                success: function(result){
+                  $("#alarmview").html(result);
+                  if (e.getAttribute('value') == {{ .AlarmTimeStamp }} && {{ .AlarmPlaying }} === true) {
+                    audioAlarm.pause();
+                  }
+                },
+        });
+      }
+
     };
     {{ if .Playing }}
       setInterval(function(){
         $("#alarmed").toggleClass("backgroundOrange");
+        },1000)
+    {{ end }}
+    {{ if .AlarmPlaying }}
+      setInterval(function(){
+        $("#alarmclocked").toggleClass("backgroundOrange");
         },1000)
     {{ end }}
 </script>

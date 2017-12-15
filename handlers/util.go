@@ -58,6 +58,15 @@ func CheckForAlarm() {
 }
 
 func removeAlarm(t int64) {
+	for i, v := range alarmClocks {
+		if v.Timestamp == t {
+			alarmClocks = append(alarmClocks[:i], alarmClocks[i+1:]...)
+			return
+		}
+	}
+}
+
+func removeReminder(t int64) {
 	for i, v := range alarms {
 		if v.TimeStamp == t {
 			alarms = append(alarms[:i], alarms[i+1:]...)
@@ -67,6 +76,17 @@ func removeAlarm(t int64) {
 }
 
 func snoozeAlarm(time string, timestamp int64) {
+	for _, v := range alarmClocks {
+		if v.Timestamp == timestamp && v.Playing {
+			v.Timestamp += int64(snoozeTime) * 60
+			v.AlarmTime = time
+			v.Playing = false
+			return
+		}
+	}
+}
+
+func snoozeReminder(time string, timestamp int64) {
 	for _, v := range alarms {
 		if v.TimeStamp == timestamp && v.Playing {
 			v.TimeStamp += int64(snoozeTime) * 60
