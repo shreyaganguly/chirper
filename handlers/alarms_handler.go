@@ -46,7 +46,6 @@ func ChirperHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	data := struct {
-		SoundFile      string
 		Alarms         []*alarm
 		AlarmClocks    []*alarmClock
 		Playing        bool
@@ -55,7 +54,6 @@ func ChirperHandler(w http.ResponseWriter, r *http.Request) {
 		AlarmTimeStamp int64
 		SnoozeInterval int
 	}{
-		sound,
 		alarms,
 		alarmClocks,
 		playing,

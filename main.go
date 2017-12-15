@@ -33,7 +33,7 @@ func main() {
 	http.HandleFunc("/delete", handlers.DeleteReminderHandler)
 	http.HandleFunc("/deletealarm", handlers.DeleteAlarmHandler)
 	http.HandleFunc("/setalarm", handlers.SetHandler)
-	http.HandleFunc(fmt.Sprintf("/%s", *soundFile), handlers.SoundHandler)
+	http.HandleFunc("/sound", handlers.SoundHandler)
 	http.HandleFunc("/assets/", handlers.AssetHandler)
 	log.Println("Starting Server at", addr)
 	go handlers.CheckForAlarm()

@@ -198,15 +198,15 @@ $('.clockpicker').clockpicker({
   default: 'now',
 })
 
-  var audioReminder = new Audio({{ .SoundFile }});
-  var audioAlarm = new Audio({{ .SoundFile }});
+  var audioReminder = new Audio("sound");
+  var audioAlarm = new Audio("sound");
   var clock;
   {{ if .Playing }}
-    audioReminder = new Audio({{ .SoundFile }});
+    audioReminder = new Audio("sound");
     audioReminder.play();
   {{ end }}
   {{ if .AlarmPlaying }}
-    audioAlarm = new Audio({{ .SoundFile }});
+    audioAlarm = new Audio("sound");
     audioAlarm.play();
   {{ end }}
   var currentDate = new Date();
