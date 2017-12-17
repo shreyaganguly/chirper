@@ -23,8 +23,11 @@ func SetHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	var prefixedString string
 	timeNow := time.Now()
-
 	alarmTime := r.FormValue("alarmtime")
+	if alarmExists(alarmTime) {
+		http.Error(w, "Alarm Exists", http.StatusBadRequest)
+		return
+	}
 	if strings.HasSuffix(alarmTime, "AM") {
 		prefixedString = "AM"
 	}

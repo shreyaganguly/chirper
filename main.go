@@ -24,7 +24,7 @@ func main() {
 	lr.SetErrorLog(nil)
 	lr.SetStatusLog(nil)
 	go lr.ListenAndServe()
-	handlers.SetOptions(*soundFile, *snoozeTime, lr)
+	handlers.SetOptions(*host, *soundFile, *snoozeTime, lr)
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 	http.HandleFunc("/", handlers.ChirperHandler)
 	http.HandleFunc("/set", handlers.SetAlarmHandler)

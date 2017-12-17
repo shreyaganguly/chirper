@@ -11,10 +11,12 @@ var (
 	lr         *lrserver.Server
 	sound      string
 	snoozeTime int
+	host       string
 )
 
 //SetOptions sets soundFile, snoozeTime and livereload server
-func SetOptions(s string, st int, l *lrserver.Server) {
+func SetOptions(h, s string, st int, l *lrserver.Server) {
+	host = h
 	sound = s
 	snoozeTime = st
 	lr = l
@@ -95,4 +97,21 @@ func snoozeReminder(time string, timestamp int64) {
 			return
 		}
 	}
+}
+
+func reminderExists(reminderTime string) bool {
+	for _, v := range alarms {
+		if v.DateTime == reminderTime {
+			return true
+		}
+	}
+	return false
+}
+func alarmExists(alarmTime string) bool {
+	for _, v := range alarmClocks {
+		if v.AlarmTime == alarmTime {
+			return true
+		}
+	}
+	return false
 }

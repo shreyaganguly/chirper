@@ -46,6 +46,7 @@ func ChirperHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	data := struct {
+		Host           string
 		Alarms         []*alarm
 		AlarmClocks    []*alarmClock
 		Playing        bool
@@ -54,6 +55,7 @@ func ChirperHandler(w http.ResponseWriter, r *http.Request) {
 		AlarmTimeStamp int64
 		SnoozeInterval int
 	}{
+		host,
 		alarms,
 		alarmClocks,
 		playing,
@@ -74,6 +76,10 @@ func SetAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	dateTime := strings.Split(r.FormValue("datetime"), " ")
 	purpose := r.FormValue("purpose")
+	if reminderExists(r.FormValue("datetime")) {
+		http.Error(w, "Reminder Exists", http.StatusBadRequest)
+		return
+	}
 	dateParts := strings.Split(dateTime[0], "/")
 	timeParts := strings.Split(dateTime[1], ":")
 	hours := convertor(timeParts[0])

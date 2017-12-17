@@ -21,7 +21,7 @@ const Chirper = `
   <link href="/assets/css/base.css" rel="stylesheet">
   <link href="/assets/css/bootstrap-datetimepicker.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-clockpicker.min.css">
-  <script src="http://localhost:35729/livereload.js"></script>
+  <script src="http://{{ .Host }}:35729/livereload.js"></script>
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
   <script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
   <script src="/assets/js/validator.min.js"></script>
@@ -43,10 +43,6 @@ const Chirper = `
   <div class="tab-content">
     <div id="alarmsection" class="tab-pane fade in active">
       <div class="container">
-        <div class="alarm-error alert alert-danger fade in alert-dismissable hidden">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-          <strong>Error!</strong> Alarm Already Set!!.
-        </div>
         <div class="row well" style="margin:0px;">
           <div class='col-sm-offset-3 col-sm-6'>
             <h3>Set Alarm</h3>
@@ -59,7 +55,7 @@ const Chirper = `
                   </span>
                 </div>
               </div>
-              <button type="submit" id="submitbtnalarm" class="btn btn-primary" style="margin:10;">Submit</button>
+              <button type="submit" id="submitbtnalarm" onClick="alarmClick(this)" class="btn btn-primary" style="margin:10;">Submit</button>
             </form>
             {{ $alarmTimeStamp := .AlarmTimeStamp }}
             <div id="alarmview">
@@ -96,7 +92,7 @@ const Chirper = `
               <div class="form-group">
                   <label for="dateandtime">Set Date And Time For Alarm</label>
                   <div class='input-group date' id='datetimepicker'>
-                    <input type='text' class="form-control" name="datetime" value="" disabled />
+                    <input type='text' class="form-control" name="datetime" value="" />
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -223,13 +219,19 @@ $('.clockpicker').clockpicker({
               success: function(result){
                 $("#reminderview").html(result);
               },
+              statusCode: {
+                400: function() {
+                  alert("Reminder Already Exists!!!");
+                  return false;
+                }
+            }
       });
       $('#datetimepicker').data('DateTimePicker').date(new Date())
       return false;
 
   });
 
-  $("#submitbtnalarm").on("click", function(){
+function alarmClick(event) {
     $.ajax({
             type: "post",
             url: "/setalarm",
@@ -238,11 +240,16 @@ $('.clockpicker').clockpicker({
             success: function(result){
               $("#alarmview").html(result);
             },
+            statusCode: {
+              400: function() {
+                alert("Alarm Already Exists!!!");
+                return false;
+              }
+          }
     });
     $('.alarmvalue').val("");
     return false;
-
-});
+}
   $("#submitbtntimer").on("click", function() {
     audioReminder.pause();
     var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
