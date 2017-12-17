@@ -197,6 +197,7 @@ $('.clockpicker').clockpicker({
 
   var audioReminder = new Audio("sound");
   var audioAlarm = new Audio("sound");
+  var audioTimer =  new Audio("sound");
   var clock;
   {{ if .Playing }}
     audioReminder = new Audio("sound");
@@ -257,7 +258,7 @@ function alarmClick(event) {
     return false;
 }
   $("#submitbtntimer").on("click", function() {
-    audioReminder.pause();
+    audioTimer.pause();
     var hour = isNaN(parseInt($("#hours").val())) ? 0 : parseInt($("#hours").val()) * 60 * 60
     var minute = isNaN(parseInt($("#minutes").val())) ? 0 : parseInt($("#minutes").val()) * 60
     var second = isNaN(parseInt($("#seconds").val())) ? 0 : parseInt($("#seconds").val())
@@ -276,7 +277,7 @@ function alarmClick(event) {
       callbacks: {
         stop: function() {
           if ($(".timer").is(":visible") === true) {
-            audioReminder.play();
+            audioTimer.play();
           }
         },
         reset: function() {
@@ -284,13 +285,13 @@ function alarmClick(event) {
         }
       }
     });
-    clock.setTime(hour + minute + second - 1);
     clock.setCountdown(true);
+    clock.setTime(hour + minute + second);
     clock.start();
     return false;
   });
   $("#btnclose").on("click", function() {
-    audioReminder.pause();
+    audioTimer.pause();
     clock.reset();
   });
     function deleteAlarm(e,type){
