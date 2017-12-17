@@ -10,7 +10,7 @@ const Chirper = `
       background-color: orange !important;
     }
   </style>
-  <title></title>
+  <title>Chirper!!</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,7 +84,7 @@ const Chirper = `
         <div class="row well" style="margin:0px;">
           <div class='col-sm-offset-3 col-sm-6'>
             <h3>Set Reminder</h3>
-            <form id="datetimepickerform" method="post">
+            <form id="datetimepickerform" method="post" data-toggle="validator" role="form" novalidate="true">
               <div class="form-group">
                 <label for="purpose">Purpose(Optional):</label>
                 <input type="text" class="form-control" id="purpose" name="purpose" value="">
@@ -92,11 +92,12 @@ const Chirper = `
               <div class="form-group">
                   <label for="dateandtime">Set Date And Time For Alarm</label>
                   <div class='input-group date' id='datetimepicker'>
-                    <input type='text' class="form-control" name="datetime" value="" />
+                    <input type='text' class="form-control" name="datetime" value="" pattern="^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/\d\d\d\d (((0[1-9])|(1[0-2])):[0-5][0-9]\s(A|P|a|p)(M|m))$" data-error="Incorrect!" />
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                   </div>
+                  <div class="help-block with-errors"></div>
               </div>
             <button type="submit" id="submitbtn" class="btn btn-primary" style="margin:10;">Submit</button>
             </form>
@@ -226,7 +227,8 @@ $('.clockpicker').clockpicker({
                 }
             }
       });
-      $('#datetimepicker').data('DateTimePicker').date(new Date())
+      $('#datetimepicker').data('DateTimePicker').date(new Date());
+      $('#purpose').val("");
       return false;
 
   });
