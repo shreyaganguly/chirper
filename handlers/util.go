@@ -33,7 +33,7 @@ func checkForTimeMatch() {
 	for _, a := range alarms {
 		if a.TimeStamp == now {
 			a.Playing = true
-			lr.Reload("")
+			lr.Reload("#remindersection")
 		}
 	}
 }

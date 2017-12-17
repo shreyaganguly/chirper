@@ -186,7 +186,7 @@ const Chirper = `
 </body>
 <script>
 
-
+var reminderToggle, alarmToggle;
 $('.clockpicker').clockpicker({
   placement: 'bottom',
   align: 'left',
@@ -219,6 +219,8 @@ $('.clockpicker').clockpicker({
               data: $("#datetimepickerform").serialize(),
               success: function(result){
                 $("#reminderview").html(result);
+                if (audioReminder.paused)
+                clearTimeout(reminderToggle);
               },
               statusCode: {
                 400: function() {
@@ -241,6 +243,8 @@ function alarmClick(event) {
             data: {alarmtime: $('.alarmvalue').val()},
             success: function(result){
               $("#alarmview").html(result);
+              if (audioAlarm.paused)
+              clearTimeout(alarmToggle);
             },
             statusCode: {
               400: function() {
@@ -330,6 +334,7 @@ function alarmClick(event) {
                   $("#reminderview").html(result);
                   if (e.getAttribute('value') == {{ .TimeStamp }} && {{ .Playing }} === true) {
                     audioReminder.pause();
+                    clearTimeout(reminderToggle);
                   }
                 },
         });
@@ -343,6 +348,7 @@ function alarmClick(event) {
                   $("#alarmview").html(result);
                   if (e.getAttribute('value') == {{ .AlarmTimeStamp }} && {{ .AlarmPlaying }} === true) {
                     audioAlarm.pause();
+                    clearTimeout(alarmToggle);
                   }
                 },
         });
@@ -350,14 +356,17 @@ function alarmClick(event) {
 
     };
     {{ if .Playing }}
-      setInterval(function(){
-        $("#alarmed").toggleClass("backgroundOrange");
-        },1000)
+      if (!audioReminder.paused) {
+        reminderToggle = setInterval(function(){
+          $("#alarmed").toggleClass("backgroundOrange");
+          },1000)
+      }
     {{ end }}
     {{ if .AlarmPlaying }}
-      setInterval(function(){
-        $("#alarmclocked").toggleClass("backgroundOrange");
-        },1000)
+      if ( !audioAlarm.paused)
+        alarmToggle = setInterval(function(){
+          $("#alarmclocked").toggleClass("backgroundOrange");
+          },1000)
     {{ end }}
 </script>
 </body>
