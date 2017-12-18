@@ -140,10 +140,6 @@ const Chirper = `
     <div id="timersection" class="tab-pane fade">
       <div class="container">
         <div class="row well" style="margin:0px;">
-          <div class="timer-error alert alert-danger fade in alert-dismissable hidden">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-            <strong>Error!</strong> Timer cannot start at 0.
-          </div>
           <div class='col-sm-offset-3 col-sm-6'>
             <h3>Start Timer</h3>
               <form data-toggle="validator" role="form" novalidate="true">
@@ -263,10 +259,10 @@ function alarmClick(event) {
     var minute = isNaN(parseInt($("#minutes").val())) ? 0 : parseInt($("#minutes").val()) * 60
     var second = isNaN(parseInt($("#seconds").val())) ? 0 : parseInt($("#seconds").val())
     if (hour === 0 && minute === 0 && second === 0) {
-      $(".timer-error").removeClass("hidden");
+      alert("Timer cannot be set at 0");
       return false;
     }
-    $(".timer-error").addClass("hidden");
+    $(".timer").addClass("hidden");
     $("#hours").val("")
     $("#minutes").val("")
     $("#seconds").val("")
@@ -277,6 +273,7 @@ function alarmClick(event) {
       callbacks: {
         stop: function() {
           if ($(".timer").is(":visible") === true) {
+            audioTimer =  new Audio("sound");
             audioTimer.play();
           }
         },
